@@ -218,7 +218,10 @@
             </div>
           </div>
 
-          <div class="t-eyebrow mt-6" data-i18n="setup">Setup</div>
+          <div class="row-flex mt-6" style="justify-content:space-between">
+            <div class="t-eyebrow" data-i18n="setup">Setup</div>
+            <button class="setup-edit-btn" id="editSetupBtn" data-i18n="editSetup">Edit setup</button>
+          </div>
           <div class="col gap-2 mt-2" id="profileSetup"></div>
 
           <div class="t-eyebrow mt-6" data-i18n="preferences">Preferences</div>
@@ -295,6 +298,20 @@
         </button>
       </div>
       <div id="sheetBody"></div>
+    </div>
+  </div>
+
+  <!-- Edit Setup Sheet -->
+  <div id="setupSheet" style="display:none">
+    <div class="sheet-backdrop" id="setupSheetBackdrop"></div>
+    <div class="sheet full" id="setupSheetContent">
+      <div class="row-flex" style="justify-content:space-between">
+        <div class="t-eyebrow" data-i18n="editSetup">Edit setup</div>
+        <button class="btn-icon" id="setupSheetClose" aria-label="Close setup editor">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <div id="setupSheetBody"></div>
     </div>
   </div>
 

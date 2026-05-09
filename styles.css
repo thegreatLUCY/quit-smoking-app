@@ -171,6 +171,11 @@ input { font: inherit; color: inherit; background: none; border: 0; outline: 0; 
 .toggle-group { display: flex; gap: 4px; background: var(--surface-3); padding: 3px; border-radius: 10px; }
 .toggle-btn { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; background: transparent; color: var(--ink-2); }
 .toggle-btn.active { background: var(--ink); color: var(--surface); }
+.setup-edit-btn { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); font-weight: 600; padding: 6px 0; }
+.setup-form { margin-top: 24px; }
+.setup-field { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; }
+.setup-input { margin-top: 8px; padding: 6px 0 2px; color: var(--ink); font-family: var(--font-mono); font-size: 24px; font-variant-numeric: tabular-nums; }
+.setup-error { display: none; margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: color-mix(in oklab, var(--danger) 12%, transparent); color: var(--danger); font-size: 13px; line-height: 1.4; }
 
 /* Onboarding */
 .ob-inner { min-height: 100dvh; display: flex; flex-direction: column; padding: 12px 22px 32px; }

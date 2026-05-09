@@ -66,6 +66,9 @@ function bindEvents() {
   $('sheetClose').addEventListener('click', closeCravingSheet);
   // Settings
   $('settingsBtn').addEventListener('click', () => switchTab('tabProfile'));
+  $('editSetupBtn').addEventListener('click', openSetupSheet);
+  $('setupSheetBackdrop').addEventListener('click', closeSetupSheet);
+  $('setupSheetClose').addEventListener('click', closeSetupSheet);
   // Reset
   $('resetBtn').addEventListener('click', () => {
     if (confirm(currentLang === 'ar' ? 'هل أنت متأكد؟' : 'Are you sure?')) {
@@ -496,6 +499,115 @@ function renderProfileTab() {
       <span class="t-num" style="font-size:14px;color:var(--ink-2)">${r.v}</span>
     </div>`;
   }).join('');
+}
+
+/* ============ EDIT SETUP SHEET ============ */
+let setupDraft = null;
+
+function toDateTimeLocalValue(timestamp) {
+  const d = new Date(timestamp);
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function openSetupSheet() {
+  if (!userData) return;
+  setupDraft = {
+    perDay: userData.perDay,
+    price: userData.price,
+    perPack: userData.perPack,
+    currency: userData.currency || 'EGP',
+    startedAt: userData.startedAt,
+  };
+  $('setupSheet').style.display = '';
+  renderSetupSheet();
+}
+
+function closeSetupSheet() {
+  $('setupSheet').style.display = 'none';
+  setupDraft = null;
+}
+
+function renderSetupSheet() {
+  const body = $('setupSheetBody');
+  const maxDateTime = toDateTimeLocalValue(Date.now());
+  body.innerHTML = `
+    <div class="setup-form">
+      <div class="col gap-2">
+        <label class="setup-field">
+          <span class="t-label">${t('cigsPerDay')}</span>
+          <input type="number" min="1" step="1" id="setupPerDayInput" class="setup-input" value="${setupDraft.perDay}">
+        </label>
+        <label class="setup-field">
+          <span class="t-label">${t('packPrice')}</span>
+          <input type="number" min="0.01" step="0.01" id="setupPriceInput" class="setup-input" value="${setupDraft.price}">
+        </label>
+        <label class="setup-field">
+          <span class="t-label">${t('cigsPerPack')}</span>
+          <input type="number" min="1" step="1" id="setupPerPackInput" class="setup-input" value="${setupDraft.perPack}">
+        </label>
+        <div class="setup-field">
+          <div class="t-label">${t('currency')}</div>
+          <div class="ob-currency-row mt-3" id="setupCurrencyRow"></div>
+        </div>
+        <label class="setup-field">
+          <span class="t-label">${t('quitDateTime')}</span>
+          <input type="datetime-local" id="setupStartedAtInput" class="ob-datetime-input mt-3" value="${toDateTimeLocalValue(setupDraft.startedAt)}" max="${maxDateTime}">
+        </label>
+      </div>
+      <div class="setup-error" id="setupError">${t('setupError')}</div>
+      <button class="btn btn-primary mt-6" id="saveSetupBtn">${t('saveChanges')}</button>
+      <button class="btn btn-outline mt-2" style="width:100%" id="cancelSetupBtn">${t('cancel')}</button>
+    </div>
+  `;
+  renderSetupCurrencySelector();
+  $('saveSetupBtn').addEventListener('click', saveSetupChanges);
+  $('cancelSetupBtn').addEventListener('click', closeSetupSheet);
+}
+
+function renderSetupCurrencySelector() {
+  $('setupCurrencyRow').innerHTML = CURRENCIES.map(c =>
+    `<button class="ob-currency-btn ${setupDraft.currency === c.code ? 'selected' : ''}" data-cur="${c.code}">
+      <span class="ob-cur-symbol">${c.symbol}</span>
+      <span class="ob-cur-code">${c.code}</span>
+    </button>`
+  ).join('');
+  $('setupCurrencyRow').querySelectorAll('.ob-currency-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setupDraft.currency = btn.dataset.cur;
+      renderSetupCurrencySelector();
+    });
+  });
+}
+
+function saveSetupChanges() {
+  const perDay = Number($('setupPerDayInput').value);
+  const price = Number($('setupPriceInput').value);
+  const perPack = Number($('setupPerPackInput').value);
+  const startedAt = new Date($('setupStartedAtInput').value).getTime();
+  const valuesAreValid = Number.isFinite(perDay) && perDay > 0
+    && Number.isFinite(price) && price > 0
+    && Number.isFinite(perPack) && perPack > 0
+    && Number.isFinite(startedAt) && startedAt <= Date.now();
+
+  if (!valuesAreValid) {
+    $('setupError').style.display = 'block';
+    return;
+  }
+
+  userData = {
+    ...userData,
+    perDay,
+    price,
+    perPack,
+    currency: setupDraft.currency,
+    startedAt,
+  };
+  saveData();
+  closeSetupSheet();
+  startTimer();
+  renderAll();
+  showToast(t('setupSaved'));
 }
 
 /* ============ CRAVING SHEET ============ */
