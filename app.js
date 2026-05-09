@@ -117,7 +117,13 @@ function updateThemeIcon() {
 
 /* ============ ONBOARDING ============ */
 let obStep = 0;
-let obData = { perDay: 20, price: 60, perPack: 20, when: 'now' };
+let obData = { perDay: 20, price: 60, perPack: 20, when: 'now', currency: 'EGP' };
+const CURRENCIES = [
+  { code: 'EGP', symbol: 'ج.م', label: 'EGP' },
+  { code: 'USD', symbol: '$', label: 'USD' },
+  { code: 'EUR', symbol: '€', label: 'EUR' },
+  { code: 'SAR', symbol: 'ر.س', label: 'SAR' },
+];
 const obIcons = [
   'M2 16h16v4H2z M18 16v4 M14 16v4 M19 9c0-2 2-2 2-4 M16 9c0-2 2-2 2-4',
   'M12 12m-9 0a9 9 0 1 0 18 0 9 9 0 1 0-18 0 M9 12h6 M12 8v8',
@@ -152,20 +158,30 @@ function renderObStep() {
     $('obInputArea').style.display = '';
     $('obWhenArea').style.display = 'none';
     $('obInput').value = obData[obKeys[obStep]];
-    $('obSuffix').textContent = t(`obStep${obStep + 1}Suffix`);
+    $('obSuffix').textContent = obStep === 1 ? getCurrencyLabel() : t(`obStep${obStep + 1}Suffix`);
+    $('obInput').oninput = () => {
+      if (obStep === 1) updateProjection();
+    };
   } else {
     $('obInputArea').style.display = 'none';
     $('obWhenArea').style.display = '';
     renderWhenOptions();
   }
 
+  // Currency selector on step 2
+  if (obStep === 1) {
+    $('obCurrencyArea').style.display = '';
+    renderCurrencySelector();
+  } else {
+    $('obCurrencyArea').style.display = 'none';
+  }
+
   // Projection on step 2
   if (obStep === 1) {
     $('obProjection').style.display = '';
-    const yearly = Math.round((obData.perDay / obData.perPack) * obData.price * 365);
     $('obProjLabel').textContent = t('projection');
-    $('obProjValue').textContent = `${fmtNum(yearly)} EGP`;
     $('obProjSub').textContent = t('savedFirstYear');
+    updateProjection();
   } else {
     $('obProjection').style.display = 'none';
   }
@@ -173,6 +189,39 @@ function renderObStep() {
   $('obNext').innerHTML = obStep < 3
     ? `${t('continue')} ${svgIcon('M5 12h14M13 6l6 6-6 6', 18)}`
     : `${t('beginJourney')} ${svgIcon('M5 12h14M13 6l6 6-6 6', 18)}`;
+}
+
+function getCurrencyLabel() {
+  const c = CURRENCIES.find(c => c.code === obData.currency);
+  return c ? c.label : obData.currency;
+}
+
+function getCurrencySymbol(code) {
+  const c = CURRENCIES.find(c => c.code === (code || obData.currency));
+  return c ? c.symbol : code;
+}
+
+function updateProjection() {
+  const price = Number($('obInput').value) || obData.price;
+  const yearly = Math.round((obData.perDay / obData.perPack) * price * 365);
+  $('obProjValue').textContent = `${fmtNum(yearly)} ${getCurrencyLabel()}`;
+}
+
+function renderCurrencySelector() {
+  $('obCurrencyRow').innerHTML = CURRENCIES.map(c =>
+    `<button class="ob-currency-btn ${obData.currency === c.code ? 'selected' : ''}" data-cur="${c.code}">
+      <span class="ob-cur-symbol">${c.symbol}</span>
+      <span class="ob-cur-code">${c.code}</span>
+    </button>`
+  ).join('');
+  $('obCurrencyRow').querySelectorAll('.ob-currency-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      obData.currency = btn.dataset.cur;
+      $('obSuffix').textContent = getCurrencyLabel();
+      renderCurrencySelector();
+      updateProjection();
+    });
+  });
 }
 
 function renderWhenOptions() {
@@ -257,6 +306,7 @@ function finishOnboarding() {
     perDay: obData.perDay,
     price: obData.price,
     perPack: obData.perPack,
+    currency: obData.currency,
     startedAt,
     cravings: 0,
     unlockedAchievements: [],
@@ -323,6 +373,11 @@ function updateTimer() {
   const lifeMin = cigsAvoided * 11;
 
   $('moneySaved').textContent = fmtNum(Math.round(moneySaved));
+  const curLabel = document.querySelector('[data-i18n="egpSaved"]');
+  if (curLabel) {
+    const c = userData.currency || 'EGP';
+    curLabel.textContent = currentLang === 'ar' ? `${c} موفّرة` : `${c} saved`;
+  }
   $('cigsAvoided').textContent = fmtNum(Math.floor(cigsAvoided));
   $('lifeRegained').textContent = `${fmtNum(Math.floor(lifeMin / 60))}h`;
 
@@ -401,7 +456,8 @@ function renderMilestones() {
 function renderStatsTab(elapsed, cigsAvoided, moneySaved, lifeMin) {
   const days = elapsed / 86400000;
   $('statsMoney').textContent = fmtNum(Math.round(moneySaved));
-  $('statsMoneyRate').textContent = `EGP · ${t('atThisRate')} ${fmtNum(Math.round(moneySaved * 365 / Math.max(days, 0.1)))} / ${t('year')}`;
+  const cur = userData.currency || 'EGP';
+  $('statsMoneyRate').textContent = `${cur} · ${t('atThisRate')} ${fmtNum(Math.round(moneySaved * 365 / Math.max(days, 0.1)))} / ${t('year')}`;
   $('statsCigs').textContent = fmtNum(Math.floor(cigsAvoided));
   $('statsLife').innerHTML = `${fmtNum(Math.floor(lifeMin / 60))}<span style="font-size:18px;color:var(--ink-2)">h ${fmtNum(Math.floor(lifeMin % 60))}m</span>`;
 
@@ -425,7 +481,7 @@ function renderProfileTab() {
 
   const items = [
     { icon: 'M2 16h16v4H2z M18 16v4 M14 16v4 M19 9c0-2 2-2 2-4 M16 9c0-2 2-2 2-4', l: t('cigsPerDay'), v: fmtNum(userData.perDay) },
-    { icon: 'M12 12m-9 0a9 9 0 1 0 18 0 9 9 0 1 0-18 0 M9 12h6 M12 8v8', l: t('packPrice'), v: `${fmtNum(userData.price)} EGP` },
+    { icon: 'M12 12m-9 0a9 9 0 1 0 18 0 9 9 0 1 0-18 0 M9 12h6 M12 8v8', l: t('packPrice'), v: `${fmtNum(userData.price)} ${userData.currency || 'EGP'}` },
     { icon: 'M12 22V11 M12 11c-4-2-6-6-4-9 3-1 6 2 7 5 M12 11c4-2 6-6 4-9-3-1-6 2-7 5', l: t('cigsPerPack'), v: fmtNum(userData.perPack) },
   ];
 

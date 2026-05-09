@@ -185,9 +185,16 @@ input { font: inherit; color: inherit; background: none; border: 0; outline: 0; 
 .ob-radio-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink); }
 .ob-datetime-input { width: 100%; padding: 12px 14px; background: var(--surface-3); border: 1px solid var(--border); border-radius: 12px; color: var(--ink); font-family: var(--font-mono); font-size: 16px; }
 .ob-datetime-input:focus { border-color: var(--gold); outline: none; }
-[color-scheme] { color-scheme: dark light; }
 [data-theme="dark"] .ob-datetime-input { color-scheme: dark; }
 [data-theme="light"] .ob-datetime-input, :root .ob-datetime-input { color-scheme: light; }
+
+.ob-currency-row { display: flex; gap: 8px; }
+.ob-currency-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 8px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface); cursor: pointer; transition: all .2s; }
+.ob-currency-btn .ob-cur-symbol { font-size: 18px; font-weight: 600; color: var(--ink-2); }
+.ob-currency-btn .ob-cur-code { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .5px; }
+.ob-currency-btn.selected { border-color: var(--gold); background: color-mix(in oklab, var(--gold) 10%, transparent); }
+.ob-currency-btn.selected .ob-cur-symbol { color: var(--gold); }
+.ob-currency-btn.selected .ob-cur-code { color: var(--gold); }
 
 /* Sheet */
 .sheet-backdrop { position: fixed; inset: 0; background: rgba(10,12,11,0.55); z-index: 30; animation: fadeIn 200ms ease; }

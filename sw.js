@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quittrack-v2';
+const CACHE_NAME = 'quittrack-v3';
 const ASSETS = [
   '/',
   '/index.html',
