@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=5">
   <title>QuitTrack</title>
 </head>
 <body>
@@ -312,6 +312,21 @@
         </button>
       </div>
       <div id="setupSheetBody"></div>
+    </div>
+  </div>
+
+  <!-- Share Modal -->
+  <div id="shareModal" style="display:none">
+    <div class="sheet-backdrop" id="shareModalBackdrop"></div>
+    <div class="share-modal">
+      <button class="sheet-close" id="shareModalClose">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div id="shareModalContent"></div>
+      <button class="btn btn-primary mt-6" id="shareBtn" style="width:100%">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        <span data-i18n="shareAchievement">Share achievement</span>
+      </button>
     </div>
   </div>
 

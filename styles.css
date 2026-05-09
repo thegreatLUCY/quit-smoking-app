@@ -20,6 +20,8 @@
   --gold-2: #d4ac6a;
   --mint: #2f8a64;
   --mint-2: #6cbf99;
+  --done: #3a6b4a;
+  --done-2: #5a8c66;
   --danger: #b94a3a;
   --shadow-sm: 0 1px 2px rgba(20,24,26,0.04), 0 1px 0 rgba(20,24,26,0.02);
   --shadow-md: 0 6px 24px -8px rgba(20,24,26,0.10), 0 2px 6px rgba(20,24,26,0.04);
@@ -45,6 +47,8 @@
   --gold-2: #e7d29a;
   --mint: #84d2a8;
   --mint-2: #a3e2c0;
+  --done: #6a9c7a;
+  --done-2: #8bb89a;
   --danger: #e7826f;
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.5);
   --shadow-md: 0 8px 28px rgba(0,0,0,0.45);
@@ -153,17 +157,34 @@ input { font: inherit; color: inherit; background: none; border: 0; outline: 0; 
 .craving-card-text { flex: 1; }
 
 /* Milestone item */
-.ms { display: flex; gap: 14px; padding: 14px 0; position: relative; }
+.ms { display: flex; gap: 14px; padding: 16px 0; position: relative; }
 .ms + .ms { border-top: 1px dashed var(--border); }
-.ms-dot { width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%; background: var(--surface-3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--ink-2); }
-.ms.done .ms-dot { background: var(--mint); color: #fff; border-color: var(--mint); }
+.ms-ring-wrap { position: relative; width: 48px; height: 48px; flex-shrink: 0; }
+.ms-ring { position: absolute; inset: 0; }
+.ms-dot { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--ink-2); position: absolute; top: 6px; left: 6px; }
+.ms.done .ms-dot { background: var(--done); color: #fff; border-color: var(--done); }
 [data-theme="dark"] .ms.done .ms-dot { color: #0b0d0c; }
-.ms.now .ms-dot { background: var(--gold); color: #1a1410; border-color: var(--gold); box-shadow: 0 0 0 4px color-mix(in oklab, var(--gold) 22%, transparent); }
-.ms-body { flex: 1; padding-top: 2px; }
+.ms.now .ms-dot { background: var(--gold); color: #1a1410; border-color: var(--gold); }
+.ms-body { flex: 1; padding-top: 4px; }
+.ms-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.ms-info { flex: 1; }
 .ms-body h4 { font-size: 15px; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.01em; }
 .ms-body p { font-size: 13px; color: var(--ink-2); line-height: 1.45; }
 .ms-body .when { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 4px; }
 [dir="rtl"] .ms-body { text-align: right; }
+.ms-share-btn { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; justify-content: center; color: var(--done); cursor: pointer; flex-shrink: 0; transition: all .2s; }
+.ms-share-btn:active { transform: scale(0.92); }
+
+/* Share Modal */
+.share-modal { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: calc(100% - 40px); max-width: 360px; background: var(--surface); border-radius: 24px; padding: 32px 24px 24px; z-index: 32; text-align: center; box-shadow: var(--shadow-lg); animation: fadeIn 200ms ease; }
+.share-medal { display: flex; justify-content: center; position: relative; }
+.share-medal-ring { width: 120px; height: 120px; border-radius: 50%; background: color-mix(in oklab, var(--gold) 10%, transparent); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; }
+.share-medal-badge { position: absolute; bottom: -4px; right: calc(50% - 44px); width: 28px; height: 28px; border-radius: 50%; background: var(--done); color: #fff; display: flex; align-items: center; justify-content: center; border: 3px solid var(--surface); }
+[data-theme="dark"] .share-medal-badge { color: #0b0d0c; }
+.share-medal-stats { display: flex; align-items: center; justify-content: center; gap: 20px; }
+.share-stat { text-align: center; }
+.share-stat-divider { width: 1px; height: 36px; background: var(--border); }
+.share-branding { padding-top: 12px; border-top: 1px solid var(--border); }
 [dir="rtl"] .stat { text-align: right; }
 
 /* Profile */

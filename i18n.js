@@ -101,6 +101,7 @@ const translations = {
     unlocksAt: "unlocks at",
     pickTime: "What time did you stop?",
     pickDateTime: "When did you stop?",
+    shareAchievement: "Share achievement",
   },
   ar: {
     switchLang: "English",
@@ -204,6 +205,7 @@ const translations = {
     unlocksAt: "يُفتح عند",
     pickTime: "في أي وقت أقلعت؟",
     pickDateTime: "متى أقلعت بالضبط؟",
+    shareAchievement: "مشاركة الإنجاز",
   }
 };
 

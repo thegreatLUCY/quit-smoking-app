@@ -402,8 +402,7 @@ function renderNextMilestone(elapsed) {
     return;
   }
   const m = MILESTONES_DATA[nextIdx];
-  const prev = nextIdx > 0 ? MILESTONES_DATA[nextIdx - 1].t : 0;
-  const pct = Math.min(100, ((elapsed - prev) / (m.t - prev)) * 100);
+  const pct = Math.min(100, (elapsed / m.t) * 100);
   const title = currentLang === 'ar' ? m.titlea : m.title;
   const k = currentLang === 'ar' ? m.ka : m.k;
 
@@ -429,6 +428,17 @@ function renderAll() {
 }
 
 /* ============ MILESTONES TAB ============ */
+function msRingProgress(pct, done, isNext) {
+  const r = 20, C = 2 * Math.PI * r;
+  const strokeColor = done ? 'var(--done)' : isNext ? 'var(--gold)' : 'var(--ink-3)';
+  const bgOpacity = done ? 0.25 : 0.1;
+  return `<svg class="ms-ring" width="48" height="48" viewBox="0 0 48 48">
+    <circle cx="24" cy="24" r="${r}" fill="none" stroke="${strokeColor}" stroke-opacity="${bgOpacity}" stroke-width="3"/>
+    <circle cx="24" cy="24" r="${r}" fill="none" stroke="${strokeColor}" stroke-width="3" stroke-linecap="round"
+      stroke-dasharray="${C}" stroke-dashoffset="${C - (C * Math.min(pct, 100)) / 100}" transform="rotate(-90 24 24)"/>
+  </svg>`;
+}
+
 function renderMilestones() {
   const elapsed = Date.now() - userData.startedAt;
   const nextIdx = MILESTONES_DATA.findIndex(m => m.t > elapsed);
@@ -442,17 +452,97 @@ function renderMilestones() {
     const k = currentLang === 'ar' ? m.ka : m.k;
     const iconPaths = m.icon.split(' M').map((p, j) => `<path d="${j > 0 ? 'M' : ''}${p}"/>`).join('');
 
+    const pct = done ? 100 : Math.max(0, Math.min(100, (elapsed / m.t) * 100));
+
+    const shareBtn = done ? `<button class="ms-share-btn" data-ms-idx="${i}" title="Share">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+    </button>` : '';
+
     return `
       <div class="ms ${cls}">
-        <div class="ms-dot">${done ? checkSvg : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${iconPaths}</svg>`}</div>
+        <div class="ms-ring-wrap">
+          ${msRingProgress(pct, done, isNext)}
+          <div class="ms-dot">${done ? checkSvg : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${iconPaths}</svg>`}</div>
+        </div>
         <div class="ms-body">
-          <div class="when">${k}</div>
-          <h4>${title}</h4>
+          <div class="ms-header">
+            <div class="ms-info">
+              <div class="when">${k}${!done ? ` · ${Math.round(pct)}%` : ''}</div>
+              <h4>${title}</h4>
+            </div>
+            ${shareBtn}
+          </div>
           <p>${body}</p>
         </div>
       </div>
     `;
   }).join('');
+
+  // Bind share buttons
+  document.querySelectorAll('.ms-share-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.dataset.msIdx);
+      openShareModal(idx);
+    });
+  });
+}
+
+function openShareModal(msIdx) {
+  const m = MILESTONES_DATA[msIdx];
+  const title = currentLang === 'ar' ? m.titlea : m.title;
+  const k = currentLang === 'ar' ? m.ka : m.k;
+  const body = currentLang === 'ar' ? m.bodya : m.body;
+  const elapsed = Date.now() - userData.startedAt;
+  const days = Math.floor(elapsed / 86400000);
+
+  $('shareModal').style.display = '';
+  $('shareModalContent').innerHTML = `
+    <div class="share-medal">
+      <div class="share-medal-ring">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          ${m.icon.split(' M').map((p, j) => `<path d="${j > 0 ? 'M' : ''}${p}"/>`).join('')}
+        </svg>
+      </div>
+      <div class="share-medal-badge">${checkSvg}</div>
+    </div>
+    <div class="t-eyebrow mt-4" style="color:var(--gold)">${currentLang === 'ar' ? 'إنجاز مُفتَح' : 'ACHIEVEMENT UNLOCKED'}</div>
+    <h2 class="t-display mt-2" style="font-size:26px">${title}</h2>
+    <p class="t-body mt-2" style="color:var(--ink-2)">${body}</p>
+    <div class="share-medal-stats mt-4">
+      <div class="share-stat">
+        <div class="t-num" style="font-size:20px;color:var(--mint)">${k}</div>
+        <div class="t-cap">${currentLang === 'ar' ? 'المدة' : 'milestone'}</div>
+      </div>
+      <div class="share-stat-divider"></div>
+      <div class="share-stat">
+        <div class="t-num" style="font-size:20px;color:var(--gold)">${fmtNum(days)}</div>
+        <div class="t-cap">${t('days')}</div>
+      </div>
+    </div>
+    <div class="share-branding mt-4">
+      <span class="t-cap" style="color:var(--ink-3)">QuitTrack</span>
+    </div>
+  `;
+
+  $('shareModalClose').onclick = () => { $('shareModal').style.display = 'none'; };
+  $('shareModalBackdrop').onclick = () => { $('shareModal').style.display = 'none'; };
+  $('shareBtn').onclick = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: 'QuitTrack',
+        text: currentLang === 'ar'
+          ? `🏅 أنجزت: ${title}! ${days} يوم بدون تدخين`
+          : `🏅 Unlocked: ${title}! ${days} days smoke-free`,
+      }).catch(() => {});
+    } else {
+      const text = currentLang === 'ar'
+        ? `🏅 أنجزت: ${title}! ${days} يوم بدون تدخين`
+        : `🏅 Unlocked: ${title}! ${days} days smoke-free`;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(currentLang === 'ar' ? 'تم النسخ' : 'Copied to clipboard');
+      });
+    }
+  };
 }
 
 /* ============ STATS TAB ============ */
@@ -660,9 +750,12 @@ function renderCravingSheet() {
     `;
     $('skipBreathBtn').addEventListener('click', () => { cravingPhase = 'reasons'; if (cravingTimerInterval) clearInterval(cravingTimerInterval); renderCravingSheet(); });
   } else if (cravingPhase === 'reasons') {
+    const yearlySaved = Math.round((userData.perDay / userData.perPack) * userData.price * 365);
+    const cur = userData.currency || 'EGP';
+    const moneySavingsText = `${fmtNum(yearlySaved)} ${cur} / ${t('year')}`;
     const reasons = [
       { icon: 'M12 20s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 5C19 15.5 12 20 12 20z', t: t('myFamily'), s: t('myFamilySub'), c: 'var(--danger)' },
-      { icon: 'M12 12m-9 0a9 9 0 1 0 18 0 9 9 0 1 0-18 0 M9 12h6 M12 8v8', t: t('moneySavings'), s: t('moneySavingsSub'), c: 'var(--gold)' },
+      { icon: 'M12 12m-9 0a9 9 0 1 0 18 0 9 9 0 1 0-18 0 M9 12h6 M12 8v8', t: moneySavingsText, s: t('moneySavingsSub'), c: 'var(--gold)' },
       { icon: 'M12 4v9 M12 13c0-3-2-5-4-5s-4 2-4 5v3a4 4 0 0 0 4 4c1 0 2-1 2-2v-5 M12 13c0-3 2-5 4-5s4 2 4 5v3a4 4 0 0 1-4 4c-1 0-2-1-2-2v-5', t: t('breathingFreely'), s: t('breathingFreelySub'), c: 'var(--mint)' },
     ];
     body.innerHTML = `
