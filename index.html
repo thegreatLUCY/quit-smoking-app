@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0b0d0c">
+  <meta name="description" content="Track your quit smoking journey with milestones, achievements, and health improvements">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="QuitTrack">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <title>QuitTrack</title>
+</head>
+<body>
+
+  <!-- Onboarding -->
+  <div id="onboarding" class="screen active">
+    <div class="ob-inner">
+      <div class="ob-top">
+        <div class="t-eyebrow" id="obStep">Step 1 / 4</div>
+      </div>
+      <div class="bar mt-3"><span id="obBar" style="width:25%"></span></div>
+
+      <div class="ob-body mt-8">
+        <div class="ob-icon-wrap" id="obIconWrap">
+          <svg id="obIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></svg>
+        </div>
+        <h1 class="t-display mt-4" id="obTitle" style="font-size:34px"></h1>
+        <p class="t-body mt-2" id="obSub"></p>
+
+        <div class="mt-8" id="obInputArea">
+          <div class="ob-num-row">
+            <input type="number" id="obInput" class="ob-num-input" value="20">
+            <div class="t-label" id="obSuffix"></div>
+          </div>
+        </div>
+
+        <div id="obWhenArea" class="col gap-2 mt-6" style="display:none"></div>
+
+        <div id="obProjection" class="card mt-6" style="display:none;background:var(--surface-3)">
+          <div class="t-eyebrow" id="obProjLabel">Projection</div>
+          <div class="t-num mt-2" style="font-size:28px;color:var(--mint)" id="obProjValue"></div>
+          <div class="t-cap" id="obProjSub"></div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary mt-6" id="obNext">Continue</button>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" class="screen" style="display:none">
+    <div class="app-scroll" id="appScroll">
+      <!-- Home Tab -->
+      <div id="tabHome" class="tab-content active">
+        <div class="px-5" style="padding-top:6px">
+          <div class="row-flex" style="justify-content:space-between">
+            <div>
+              <div class="t-eyebrow" data-i18n="today">Today</div>
+              <div class="t-h2 mt-2" id="dayLabel">Day 1</div>
+            </div>
+            <button class="btn-icon" id="settingsBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+            </button>
+          </div>
+
+          <!-- Hero Timer -->
+          <div class="hero mt-4">
+            <div class="row-flex" style="gap:10px">
+              <div class="dot-live"></div>
+              <div class="t-eyebrow" style="color:var(--hero-ink-2)" data-i18n="smokeFree">Smoke-free</div>
+            </div>
+            <div class="hero-timer-row mt-3">
+              <div class="ring-wrap">
+                <svg width="150" height="150">
+                  <circle cx="75" cy="75" r="64" class="ring-bg" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6"/>
+                  <circle cx="75" cy="75" r="64" class="ring-fg" id="heroRing" fill="none" stroke="var(--gold)" stroke-width="6" stroke-linecap="round" transform="rotate(-90 75 75)"/>
+                </svg>
+                <div class="ring-center">
+                  <div class="t-display" id="timerDays" style="font-size:42px;color:var(--hero-ink)">0</div>
+                  <div class="t-eyebrow" style="color:var(--hero-ink-2)" data-i18n="days">days</div>
+                </div>
+              </div>
+              <div class="col gap-3 flex-1">
+                <div class="hero-time-row">
+                  <span class="t-num hero-time-val" id="timerHours">00</span>
+                  <span class="t-eyebrow" style="color:var(--hero-ink-2)" data-i18n="hours">hrs</span>
+                </div>
+                <div class="hero-time-row">
+                  <span class="t-num hero-time-val" id="timerMinutes">00</span>
+                  <span class="t-eyebrow" style="color:var(--hero-ink-2)" data-i18n="minutes">min</span>
+                </div>
+                <div class="hero-time-row">
+                  <span class="t-num hero-time-val" id="timerSeconds">00</span>
+                  <span class="t-eyebrow" style="color:var(--hero-ink-2)" data-i18n="seconds">sec</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-streak mt-4">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold-2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4 0 7-3 7-7 0-4-4-6-3-11-3 1-7 5-7 9 0 1-1 2-2 2-1 0-2-1-2-3 0 0-2 2-2 5 0 4 4 5 9 5z"/></svg>
+              <span id="streakText" style="color:var(--hero-ink);font-size:13px;font-weight:500"></span>
+              <span id="streakPct" style="color:var(--hero-ink-2);font-size:13px;margin-inline-start:auto"></span>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid-3 mt-4">
+            <div class="stat">
+              <svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12h6"/><path d="M12 8v8"/></svg>
+              <div class="v" id="moneySaved">0</div>
+              <div class="l" data-i18n="egpSaved">EGP saved</div>
+            </div>
+            <div class="stat">
+              <svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16h16v4H2z"/><path d="M18 16v4"/><path d="M14 16v4"/><path d="M19 9c0-2 2-2 2-4"/><path d="M16 9c0-2 2-2 2-4"/></svg>
+              <div class="v" id="cigsAvoided">0</div>
+              <div class="l" data-i18n="avoided">avoided</div>
+            </div>
+            <div class="stat">
+              <svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 5C19 15.5 12 20 12 20z"/></svg>
+              <div class="v" id="lifeRegained">0h</div>
+              <div class="l" data-i18n="lifeBack">life back</div>
+            </div>
+          </div>
+
+          <!-- Craving Card -->
+          <button class="card mt-4 craving-card" id="cravingBtn">
+            <div class="craving-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h12a3 3 0 1 0-3-3"/><path d="M3 16h16a3 3 0 1 1-3 3"/><path d="M3 12h10"/></svg>
+            </div>
+            <div class="craving-card-text">
+              <div style="font-size:15px;font-weight:600" data-i18n="cravingHitting">Craving hitting?</div>
+              <div class="t-cap" style="margin-top:2px" data-i18n="breathingReset">4-minute breathing reset</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+
+          <!-- Cravings beaten -->
+          <div class="row mt-3">
+            <div class="row-flex" style="gap:10px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>
+              <div class="col">
+                <div style="font-size:14px;font-weight:600" data-i18n="cravingsBeaten">Cravings beaten</div>
+                <div class="t-cap" style="margin-top:2px" data-i18n="thisWeek">This week</div>
+              </div>
+            </div>
+            <div class="t-num" style="font-size:22px;color:var(--mint)" id="cravingCount">0</div>
+          </div>
+
+          <!-- Next milestone preview -->
+          <div class="t-eyebrow mt-6" data-i18n="nextMilestone">Next up</div>
+          <div class="card mt-2" id="nextMsCard" style="background:linear-gradient(135deg,color-mix(in oklab,var(--gold) 12%,var(--surface-2)),var(--surface-2))">
+            <div class="t-eyebrow" data-i18n="nextUp">Next up</div>
+            <div class="row-flex mt-2 gap-3" id="nextMsContent"></div>
+            <div class="bar mt-3" style="background:color-mix(in oklab,var(--gold) 18%,transparent)"><span id="nextMsBar" style="width:0%"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Milestones Tab -->
+      <div id="tabMilestones" class="tab-content">
+        <div class="px-5" style="padding-top:6px">
+          <div class="t-eyebrow" data-i18n="yourBody">Your body</div>
+          <h1 class="t-h1 mt-2" data-i18n="healingTimeline">Healing timeline</h1>
+          <p class="t-body mt-3" style="max-width:320px" data-i18n="healingDesc">Every hour rewinds damage. Here's what's happening inside you, hour by hour.</p>
+          <div class="mt-4" id="milestonesTimeline"></div>
+        </div>
+      </div>
+
+      <!-- Stats Tab -->
+      <div id="tabStats" class="tab-content">
+        <div class="px-5" style="padding-top:6px">
+          <div class="t-eyebrow" data-i18n="progress">Progress</div>
+          <h1 class="t-h1 mt-2" data-i18n="byTheNumbers">By the numbers</h1>
+
+          <div class="card mt-4" style="background:var(--hero-grad);color:var(--hero-ink);border:0">
+            <div class="t-eyebrow" style="color:var(--hero-ink-2)" data-i18n="moneySavedLabel">Money saved</div>
+            <div class="t-display mt-2" style="font-size:64px;color:var(--hero-ink)" id="statsMoney">0</div>
+            <div class="t-cap" style="color:var(--hero-ink-2)" id="statsMoneyRate"></div>
+          </div>
+
+          <div class="grid-2 mt-3">
+            <div class="card">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16h16v4H2z"/><path d="M18 16v4"/><path d="M14 16v4"/><path d="M19 9c0-2 2-2 2-4"/><path d="M16 9c0-2 2-2 2-4"/></svg>
+              <div class="t-num mt-3" style="font-size:30px" id="statsCigs">0</div>
+              <div class="t-cap" data-i18n="cigsNeverLit">cigarettes never lit</div>
+            </div>
+            <div class="card">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <div class="t-num mt-3" style="font-size:30px" id="statsLife">0h</div>
+              <div class="t-cap" data-i18n="lifeRegainedLabel">life regained</div>
+            </div>
+          </div>
+
+          <div class="t-eyebrow mt-6" data-i18n="equivalentTo">Equivalent to</div>
+          <div class="card mt-2" id="equivalents"></div>
+        </div>
+      </div>
+
+      <!-- Profile Tab -->
+      <div id="tabProfile" class="tab-content">
+        <div class="px-5" style="padding-top:6px">
+          <div class="t-eyebrow" data-i18n="you">You</div>
+          <h1 class="t-h1 mt-2" data-i18n="yourJourney">Your journey</h1>
+
+          <div class="card mt-4 row-flex gap-3">
+            <div class="profile-avatar">Q</div>
+            <div class="col">
+              <div style="font-size:16px;font-weight:600" id="profileName"></div>
+              <div class="t-cap" style="margin-top:2px" id="profileJoined"></div>
+            </div>
+          </div>
+
+          <div class="t-eyebrow mt-6" data-i18n="setup">Setup</div>
+          <div class="col gap-2 mt-2" id="profileSetup"></div>
+
+          <div class="t-eyebrow mt-6" data-i18n="preferences">Preferences</div>
+          <div class="col gap-2 mt-2">
+            <div class="row">
+              <div class="row-flex gap-3">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18"/></svg>
+                <span style="font-size:14px" data-i18n="language">Language</span>
+              </div>
+              <div class="toggle-group">
+                <button class="toggle-btn" data-lang="en">EN</button>
+                <button class="toggle-btn" data-lang="ar">AR</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="row-flex gap-3">
+                <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></svg>
+                <span style="font-size:14px" data-i18n="appearance">Appearance</span>
+              </div>
+              <div class="toggle-group">
+                <button class="toggle-btn" data-theme="light" data-i18n="light">Light</button>
+                <button class="toggle-btn" data-theme="dark" data-i18n="dark">Dark</button>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-outline mt-6" style="width:100%" id="resetBtn" data-i18n="resetOnboarding">Reset onboarding</button>
+          <div class="t-cap mt-4" style="text-align:center" data-i18n="version">Designed with care · v2.0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOS FAB -->
+    <button class="fab-sos" id="fabSOS">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h12a3 3 0 1 0-3-3"/><path d="M3 16h16a3 3 0 1 1-3 3"/><path d="M3 12h10"/></svg>
+    </button>
+
+    <!-- Tab Bar -->
+    <nav class="tabbar">
+      <button class="tab active" data-tab="tabHome">
+        <span class="ind"></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>
+        <span data-i18n="tabToday">Today</span>
+      </button>
+      <button class="tab" data-tab="tabMilestones">
+        <span class="ind"></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 5C19 15.5 12 20 12 20z"/></svg>
+        <span data-i18n="tabBody">Body</span>
+      </button>
+      <button class="tab" data-tab="tabStats">
+        <span class="ind"></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>
+        <span data-i18n="tabStats">Stats</span>
+      </button>
+      <button class="tab" data-tab="tabProfile">
+        <span class="ind"></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+        <span data-i18n="tabYou">You</span>
+      </button>
+    </nav>
+
+    <!-- Toast -->
+    <div class="toast" id="toast" style="display:none"></div>
+  </div>
+
+  <!-- Craving Sheet -->
+  <div id="cravingSheet" style="display:none">
+    <div class="sheet-backdrop" id="sheetBackdrop"></div>
+    <div class="sheet full" id="sheetContent">
+      <div class="row-flex" style="justify-content:space-between">
+        <div class="t-eyebrow" data-i18n="cravingReset">Craving reset</div>
+        <button class="btn-icon" id="sheetClose">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <div id="sheetBody"></div>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="milestones.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
